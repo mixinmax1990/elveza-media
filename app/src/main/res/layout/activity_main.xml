@@ -63,7 +63,7 @@
         android:id="@+id/headline_za"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ZA"
+        android:text="ZAA"
         android:textColor="@color/colorAccent"
         android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@id/logo_guide"
