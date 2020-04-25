@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:id="@+id/mainIMG"
+    android:scaleType="centerCrop"
+    app:layout_constraintTop_toTopOf="parent"
+    />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_desc"
+        android:textColor="#A3A3A3"
+        android:textSize="11sp"
+        android:text="Image of Something - taken by Someone"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintTop_toBottomOf="@id/mainIMG"
+        app:layout_constraintBottom_toTopOf="@id/headline"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:id="@+id/headline"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/img_desc"
+        app:layout_constraintBottom_toTopOf="@id/newsbody"
+        android:text="Testing this out"
+        android:textColor="@android:color/black"
+        android:textFontWeight="600"
+        android:layout_marginTop="5dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/headline"
+        app:layout_constraintBottom_toTopOf="@id/social_bar"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="10dp"
+        android:textSize="14sp"
+        android:id="@+id/newsbody"
+        android:text="London (CNN)Like a line of dominoes, country after country has been shut down by the novel coronavirus..."
+        android:textColor="@android:color/black"
+        android:maxLines="2"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/social_bar"
+        app:layout_constraintTop_toBottomOf="@id/newsbody"
+        android:background="@drawable/border_top"/>
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="39dp"
+        android:src="@drawable/ic_share_black_24dp"
+        android:background="@drawable/border_left"
+        app:layout_constraintBottom_toBottomOf="@id/social_bar"
+        app:layout_constraintRight_toRightOf="@id/social_bar"
+        android:layout_margin="0dp"
+        android:alpha="1"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

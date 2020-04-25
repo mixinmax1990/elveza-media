@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <FrameLayout
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/statusspace"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/statusspace"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/top_menu"
+        app:layout_constraintBottom_toBottomOf="@id/menu_toggler"
+        android:background="#C62E2E2E"
+        android:elevation="15dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:id="@+id/menu_toggler"
+        app:layout_constraintTop_toBottomOf="@id/statusspace"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <Space
+        android:id="@+id/logo_guide"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/top_menu"
+        app:layout_constraintRight_toRightOf="@id/top_menu"/>
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="ELVE"
+    android:id="@+id/headline_elve"
+    android:textSize="25sp"
+    app:layout_constraintEnd_toStartOf="@id/logo_guide"
+    app:layout_constraintTop_toTopOf="@id/top_menu"
+    app:layout_constraintBottom_toTopOf="@id/tabs"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="5dp"
+    android:elevation="20dp"
+    android:textColor="@android:color/white"
+    android:outlineProvider="none"/>
+
+    <TextView
+        android:id="@+id/headline_za"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ZA"
+        android:textColor="@color/colorAccent"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@id/logo_guide"
+        app:layout_constraintTop_toTopOf="@id/headline_elve"
+        android:elevation="20dp"
+        android:outlineProvider="none"
+        />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/headline_elve"
+        app:layout_constraintBottom_toBottomOf="@id/top_menu"
+        tools:layout_editor_absoluteX="58dp"
+        android:elevation="20dp"
+        android:outlineProvider="none"
+        app:tabTextColor="#9C9C9C"
+        app:tabSelectedTextColor="@android:color/white"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

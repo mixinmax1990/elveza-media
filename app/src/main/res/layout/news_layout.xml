@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <FrameLayout
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/statusspace"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/top_menu"
+        app:layout_constraintTop_toBottomOf="@id/statusspace"
+        android:background="#C62E2E2E"
+        android:elevation="15dp"/>
+    <Space
+        android:id="@+id/logo_guide"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/top_menu"
+        app:layout_constraintRight_toRightOf="@id/top_menu"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ELVE"
+        android:id="@+id/headline_elve"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@id/logo_guide"
+        app:layout_constraintTop_toTopOf="@id/top_menu"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:elevation="20dp"
+        android:textColor="@android:color/white"
+        android:outlineProvider="none"/>
+
+    <TextView
+        android:id="@+id/headline_za"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ZA"
+        android:textColor="@color/colorAccent"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@id/logo_guide"
+        app:layout_constraintTop_toTopOf="@id/headline_elve"
+        android:elevation="20dp"
+        android:outlineProvider="none"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_back_black_24dp"
+        app:backgroundTint="#5E5E5E"
+        android:contentDescription="backbutton"
+        android:id="@+id/backbutton"/>
+
+    <ScrollView
+        app:layout_constraintTop_toTopOf="@id/statusspace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/mainIMG"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:adjustViewBounds="false"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/mainIMG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/youtube_view_container"
+            android:paddingTop="80dp"
+            android:background="@color/colorSecondary">
+
+        <com.google.android.youtube.player.YouTubePlayerView
+            android:id="@+id/youtube_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/img_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#A3A3A3"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/headline"
+            app:layout_constraintTop_toBottomOf="@id/youtube_view_container" />
+
+        <TextView
+            android:id="@+id/headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textFontWeight="600"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@id/newsbody"
+            app:layout_constraintTop_toBottomOf="@id/img_desc" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/headline"
+        app:layout_constraintBottom_toTopOf="@id/social_bar"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:id="@+id/newsbody"
+        android:text="London (CNN)Like a line of dominoes, country after country has been shut down by the novel coronavirus..."
+        android:textColor="@android:color/black"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/social_bar"
+        app:layout_constraintTop_toBottomOf="@id/newsbody"
+        android:background="@drawable/border_top"/>
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_share_black_24dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/social_bar"
+        app:layout_constraintBottom_toBottomOf="@id/social_bar"
+        app:layout_constraintRight_toRightOf="@id/social_bar"
+        android:layout_margin="15dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
