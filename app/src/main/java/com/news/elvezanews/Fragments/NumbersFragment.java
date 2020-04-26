@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.news.elvezanews.R;
 
-public class MoreFragment extends Fragment {
+public class NumbersFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

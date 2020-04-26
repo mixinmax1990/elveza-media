@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.news.elvezanews.Fragments.MoreFragment;
+import com.news.elvezanews.Fragments.NumbersFragment;
 import com.news.elvezanews.Fragments.NewsFragment;
 import com.news.elvezanews.R;
 
@@ -35,7 +35,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new NewsFragment();
                 break;
             case 1:
-                fragment = new MoreFragment();
+                fragment = new NumbersFragment();
                 break;
         }
         return fragment;

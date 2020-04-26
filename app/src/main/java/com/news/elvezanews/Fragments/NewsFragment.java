@@ -67,9 +67,15 @@ public class NewsFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
+                int childOneTop =  newsRecycler.getChildAt(1).getTop();
+
+                if(childOneTop < 1000){
+                    Log.i("Magentize", "True");
+                }
+
                 currentscrollposition += dy;
                 //Log.i("Scroll", ""+currentscrollposition);
-                Log.i("Scroll", ""+dy);
+                //Log.i("Scroll", ""+dy);
                 if(dy < 0){
 
                     if(!menuToggled){
@@ -88,6 +94,7 @@ public class NewsFragment extends Fragment {
                     child = newsRecycler.getChildAt(0);
                     animateScale(1, child);
                     animateScale(.9f, newsRecycler.getChildAt(1));
+
 
                 }
 
