@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -51,6 +52,25 @@ public class NewsFragment extends Fragment {
         newsRecycler = root.findViewById(R.id.newslist_recycler);
         menu_toggler = activity.findViewById(R.id.menu_toggler);
         loadNewsRecyclerAdapter();
+
+        newsRecycler.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+                Log.i("Touch Event", ""+e.getAction());
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
 
 
         newsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
