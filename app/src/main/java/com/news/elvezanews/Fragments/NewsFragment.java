@@ -21,11 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.news.elvezanews.Adapters.NewsRecyclerAdapter;
 import com.news.elvezanews.Data.LoadTempNews;
+import com.news.elvezanews.Data.WordpressJson;
 import com.news.elvezanews.Interfaces.RecyclerViewClickListener;
 import com.news.elvezanews.MainActivity;
 import com.news.elvezanews.Models.NewsModelList;
 import com.news.elvezanews.NewsActivity;
 import com.news.elvezanews.R;
+
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -33,13 +36,14 @@ public class NewsFragment extends Fragment {
 
 
     private RecyclerView newsRecycler;
-    private List<NewsModelList> allNews;
-    private LoadTempNews tempNews;
+    //private List<NewsModelList> allNews;
+    //private LoadTempNews tempNews;
     private Context context;
     private static View root;
     MainActivity activity;
     private LinearLayout menu_toggler;
     boolean menuToggled = false;
+    private int bottomChildPos;
 
     @Nullable
     @Override
@@ -51,24 +55,25 @@ public class NewsFragment extends Fragment {
         this.context = getContext();
         newsRecycler = root.findViewById(R.id.newslist_recycler);
         menu_toggler = activity.findViewById(R.id.menu_toggler);
-        loadNewsRecyclerAdapter();
 
-        newsRecycler.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+        WordpressJson json = new WordpressJson("http://13.244.117.59/wp-json/wp/v2/posts", this.context, this);
+
+        newsRecycler.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int touch = motionEvent.getAction();
+
+                if(touch == 1){
+                    //Touch out check if Magnete can be Activated
+
+                    if(bottomChildPos < 1000){
+                        //Run the Magnete
+                        magneteArticles(bottomChildPos);
+                    }
+
+
+                }
                 return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-                Log.i("Touch Event", ""+e.getAction());
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
             }
         });
 
@@ -87,11 +92,8 @@ public class NewsFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
-                int childOneTop =  newsRecycler.getChildAt(1).getTop();
-
-                if(childOneTop < 1000){
-                    Log.i("Magentize", "True");
-                }
+                bottomChildPos =  newsRecycler.getChildAt(1).getTop();
+                
 
                 currentscrollposition += dy;
                 //Log.i("Scroll", ""+currentscrollposition);
@@ -124,25 +126,46 @@ public class NewsFragment extends Fragment {
 
         return root;
     }
+    ValueAnimator vaMag;
+    private void magneteArticles(int distance){
 
-    private void loadNewsRecyclerAdapter(){
+        vaMag = ValueAnimator.ofInt(0, distance);
 
-        tempNews  = new LoadTempNews();
-        allNews = tempNews.getNews();
+        int duration = 200;
 
+        vaMag.setDuration(duration);
+        vaMag.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animValue = (int)animation.getAnimatedValue();
+                try {
 
+                    newsRecycler.scrollBy(0,1);
+                    Log.i("","");
+
+                }catch(Exception e){}
+            }
+        });
+
+        vaMag.start();
+
+    }
+
+    public void loadNewsRecyclerAdapter(JSONArray allPosts){
+
+        //tempNews  = new LoadTempNews();
+        //allNews = tempNews.getNews();
 
         final RecyclerViewClickListener listener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
 
-                NewsModelList news = allNews.get(position);
+                //NewsModelList news = allNews.get(position);
                 activity.transitionNewsActivity(position);
             }
         };
 
-
-        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(getContext(), allNews, listener);
+        //NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(getContext(), allNews, listener);
+        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(getContext(), allPosts, listener);
 
         newsRecycler.setAdapter(adapter);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
@@ -150,14 +173,8 @@ public class NewsFragment extends Fragment {
         newsRecycler.setLayoutManager(llm);
     }
 
-
-
-
     ValueAnimator vaMenExp;
     public void toggleMenu(boolean show){
-
-
-
 
         if(show){
             vaMenExp = ValueAnimator.ofInt(0, (int)convertDpToPixel(87));
@@ -168,12 +185,9 @@ public class NewsFragment extends Fragment {
             vaMenExp = ValueAnimator.ofInt((int)convertDpToPixel(87), 0);
         }
 
-
         int duration = 300;
 
         final ConstraintLayout.LayoutParams LP = (ConstraintLayout.LayoutParams) menu_toggler.getLayoutParams();
-
-
 
         vaMenExp.setDuration(duration);
         vaMenExp.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -188,7 +202,7 @@ public class NewsFragment extends Fragment {
 
         vaMenExp.start();
 
-    }
+            }
 
     ValueAnimator vaItemExp;
     public void animateScale(float factor,final View v){

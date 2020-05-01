@@ -34,5 +34,6 @@ dependencies {
 
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'com.android.volley:volley:1.1.0'
 
 }
