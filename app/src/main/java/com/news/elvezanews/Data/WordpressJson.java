@@ -1,9 +1,8 @@
 package com.news.elvezanews.Data;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
-
-import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,6 +15,8 @@ import com.news.elvezanews.Fragments.NewsFragment;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.logging.LogRecord;
 
 public class WordpressJson {
 
@@ -35,6 +36,7 @@ public class WordpressJson {
 
     }
 
+    private static JSONArray data;
     private void jsonParse(String getURL){
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, getURL, null, new Response.Listener<JSONArray>() {
@@ -42,14 +44,26 @@ public class WordpressJson {
             public void onResponse(JSONArray response) {
                 //Get The Data
 
-                parent.loadNewsRecyclerAdapter(response);
+                Log.i("REsponse", ""+response);
+
+                data = response;
+
+                final Handler handler = new Handler();
+                final Runnable r = new Runnable() {
+                    public void run() {
+                        parent.loadNewsRecyclerAdapter(data);
+                    }
+                };
+
+                handler.postDelayed(r, 1000);
+
 
                 for (int i = 0; i < response.length(); i++){
 
                     try {
                         JSONObject post = response.getJSONObject(i);
 
-                        Log.i("Get Json Data", ""+post.getString("title"));
+                        Log.i("Get Json Data", ""+post.getString("title")+" -- "+post.getString("id"));
 
 
                         // Run a method in NewsFragment
@@ -69,6 +83,16 @@ public class WordpressJson {
         });
 
         mQueue.add(request);
+        mQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JsonArrayRequest>() {
+
+            @Override
+            public void onRequestFinished(Request<JsonArrayRequest> request) {
+
+                Log.i("Request Finished", "works");
+
+
+            }
+        });
 
     }
 

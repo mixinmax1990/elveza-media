@@ -2,12 +2,20 @@ package com.news.elvezanews;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
@@ -22,6 +31,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -52,10 +62,15 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     TextView imageDesc;
     FloatingActionButton backbutton;
     String VideoCode;
+    private RequestQueue mQueue;
 
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
+    private View youtube_view_container;
+    private View socialBar;
+    private ConstraintLayout videoSection;
     private YouTubePlayer.OnInitializedListener youtube_listener;
+    private ConstraintLayout news_container;
 
 
     public NewsActivity() {
@@ -69,12 +84,16 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         setStatusbarspace();
 
         tempNews  = new LoadTempNews();
+        news_container = findViewById(R.id.news_container);
         allNews = tempNews.getNews();
         position = Integer.parseInt(getIntent().getStringExtra("position"));
+        socialBar = findViewById(R.id.social_bar);
+        videoSection = findViewById(R.id.video_section);
         Log.i("Post ID", ""+position);
 
-        String wp_geturl = "http://13.244.117.59/wp-json/wp/v2/posts?include[]="+position;
+        String wp_geturl = "http://13.244.138.196/wp-json/wp/v2/posts?include[]="+position;
         youtube_listener = this;
+        youtube_view_container = findViewById(R.id.youtube_view_container);
 
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
 
@@ -86,6 +105,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         newsBody = findViewById(R.id.newsbody);
         backbutton = findViewById(R.id.backbutton);
 
+        mQueue = Volley.newRequestQueue(this);
         jsonParse(wp_geturl);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -99,9 +119,152 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
 
     }
+    View BottomView;
+    private void setContent(JSONObject post, boolean featured_first_video){
+         BottomView = newsBody;
 
-    private RequestQueue mQueue;
+        JSONArray videos = null;
+        JSONArray videos_desc = null;
 
+        try {
+            videos = post.getJSONObject("meta_box").getJSONArray("prefix-video");
+            videos_desc = post.getJSONObject("meta_box").getJSONArray("prefix-description");
+
+            for(int x = 0;x < videos.length(); x++){
+                //Load the video and add Description. If video is at top position load to the top. The second video will be added to the bottom of current pos
+                if (x == 0) {
+                    if(featured_first_video){
+                        // ignore this video
+
+                    }
+                    else{
+                        // this is the first video
+                        // dynamically create a YOutubeVIdeo View
+                        createVideoPlayer(getYoutubeId(videos.getString(x)));
+                        createDescTextView(videos_desc.getString(x));
+
+                    }
+
+                }
+                else{
+                        createVideoPlayer(getYoutubeId(videos.getString(x)));
+                        createDescTextView(videos_desc.getString(x));
+                }
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    private void createDescTextView(final String desc){
+        final TextView description = new TextView(this);
+        description.setText(Html.fromHtml(desc));
+        ConstraintLayout.LayoutParams LPdesc = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int margins = (int)convertDpToPixel(20);
+        description.setTextColor(Color.WHITE);
+        description.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        LPdesc.setMargins(margins, margins, margins, margins);
+        description.setLayoutParams(LPdesc);
+        description.setPadding(0,0,0, margins);
+        description.setAlpha(0.8f);
+        description.setId(View.generateViewId());
+        videoSection.addView(description);
+
+        ConstraintSet set = new ConstraintSet();
+        set.clone(videoSection);
+        set.connect(description.getId(), ConstraintSet.TOP, BottomView.getId(), ConstraintSet.BOTTOM);
+        set.applyTo(videoSection);
+
+        BottomView = description;
+
+
+    }
+
+    private void createVideoPlayer(final String video){
+
+        // Fake Video Player
+        final FrameLayout videothumb_cont = new FrameLayout(this);
+        ConstraintLayout.LayoutParams LP = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int margins = (int)convertDpToPixel(10);
+        LP.setMargins(margins, margins, margins, margins);
+        videothumb_cont.setLayoutParams(LP);
+        videothumb_cont.setId(View.generateViewId());
+        videoSection.addView(videothumb_cont);
+
+        ConstraintSet set = new ConstraintSet();
+        set.clone(videoSection);
+        set.connect(videothumb_cont.getId(), ConstraintSet.TOP, BottomView.getId(), ConstraintSet.BOTTOM);
+        set.applyTo(videoSection);
+
+        //Create an Imageview that holds the thumbnail
+        final ImageView videothumb = new ImageView(this);
+        videothumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        FrameLayout.LayoutParams VTLP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        VTLP.height = (int)convertDpToPixel(200);
+        videothumb.setLayoutParams(VTLP);
+
+        //PlayButton
+        ImageButton play = new ImageButton(this);
+        FrameLayout.LayoutParams VTPB = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        VTPB.gravity = Gravity.CENTER;
+        play.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        play.setMinimumHeight((int)convertDpToPixel(60));
+        play.setMinimumWidth((int)convertDpToPixel(60));
+        play.setBackgroundColor(Color.TRANSPARENT);
+        play.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+        play.setLayoutParams(VTPB);
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // check how to send youtube id
+                removeYTPlayer();
+                Log.i("VideoCode", ""+video);
+
+                YouTubePlayerView newplayer = new YouTubePlayerView(view.getContext());
+
+                ConstraintLayout.LayoutParams LPV = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                newplayer.setLayoutParams(LPV);
+
+                newplayer.setId(View.generateViewId());
+
+                youTubeView = newplayer;
+                videothumb_cont.addView(youTubeView);
+
+                launchYoutubePlayer(video, newplayer);
+
+
+            }
+        });
+
+
+
+
+        Picasso pic = Picasso.get();
+        pic.load("https://img.youtube.com/vi/"+video+"/0.jpg").into(videothumb);
+
+        videothumb_cont.addView(videothumb);
+        videothumb_cont.addView(play);
+
+
+        BottomView = videothumb_cont;
+
+
+
+
+    }
+    private void removeYTPlayer(){
+        if(youTubeView == null){
+            //No player is set
+        }
+        else{
+            ((ViewManager)youTubeView.getParent()).removeView(youTubeView);
+        }
+    }
+    int player_id = 0;
     private void jsonParse(String getURL){
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, getURL, null, new Response.Listener<JSONArray>() {
@@ -109,6 +272,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             public void onResponse(JSONArray response) {
 
                 Log.i("response", ""+response);
+
                 try {
                     JSONObject post = response.getJSONObject(0);
 
@@ -118,14 +282,22 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                     JSONArray videos = post.getJSONObject("meta_box").getJSONArray("prefix-video");
                     JSONArray videos_desc = post.getJSONObject("meta_box").getJSONArray("prefix-description");
 
-                    boolean featured_image = false;
-                    if(featured_image){
+                    String featuredImage = post.getString("jetpack_featured_media_url");
+
+                    if(!featuredImage.isEmpty()){
                         // set the featured image
-                        setFeaturedImage("Image Response Path");
+                        setFeaturedImage(featuredImage);
 
                         //check for content
 
                         //check for videos
+                        if(videos.isNull(0)){
+
+                        }else{
+                            videoSection.setVisibility(View.VISIBLE);
+                            setContent(post, false);
+
+                        }
 
                     }
                     else{
@@ -134,23 +306,19 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
                         if(videos.isNull(0)){
                             //there are no videos ... nothing to feature
-                            mainImg.setVisibility(View.GONE);
-                            youTubeView.setVisibility(View.GONE);
                         }
                         else{
                             //feature the first video
-                            for(int x = 0;x < videos.length(); x++){
-                                //Load the video and add Description. If video is at top position load to the top. The second video will be added to the bottom of current pos
-                                if (x == 0) {
-                                    // this is the first video
-                                    mainImg.setVisibility(View.GONE);
-                                    youTubeView.setVisibility(View.VISIBLE);
-                                    launchYoutubePlayer(getYoutubeId(videos.getString(x)), youTubeView);
+                            youTubeView.setVisibility(View.VISIBLE);
+                            youtube_view_container.setVisibility(View.VISIBLE);
+                            launchYoutubePlayer(getYoutubeId(videos.getString(0)), youTubeView);
 
-                                }
-
-
+                            if(videos.length() > 1){
+                                videoSection.setVisibility(View.VISIBLE);
+                                setContent(post, false);
                             }
+
+
                         }
 
                     }
@@ -176,12 +344,12 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         Picasso pic = Picasso.get();
         pic.load(image).into(mainImg);
         mainImg.setVisibility(View.VISIBLE);
-        youTubeView.setVisibility(View.GONE);
     }
 
     private void launchYoutubePlayer(String YoutubeID, YouTubePlayerView player){
 
-        player.isInEditMode();
+        //player.isInEditMode();
+        VideoCode = YoutubeID;
         player.initialize(Config.YOUTUBE_API_KEY, youtube_listener);
 
     }
@@ -223,6 +391,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
         if (!wasRestored) {
             player.loadVideo(VideoCode); // Plays https://www.youtube.com/watch?v=fhWaJi1Hsfo
+            //player.cueVideo(VideoCode);
         }
     }
 
@@ -258,5 +427,10 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             return matcher.group(1);
         }/*from w  w  w.  j a  va  2 s .c om*/
         return null;
+    }
+
+
+    public float convertDpToPixel(float dp){
+        return dp * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 }

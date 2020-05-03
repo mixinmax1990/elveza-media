@@ -2,6 +2,7 @@ package com.news.elvezanews.Adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.news.elvezanews.Fragments.NewsFragment;
@@ -62,6 +64,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        Log.i("Position +++", ""+position);
         try {
             holder.Headline.setText(Html.fromHtml(post.getJSONObject("title").getString("rendered")));
             holder.body.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
@@ -71,8 +75,55 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             String YoutubeID = getYoutubeId(YoutubeURL);
             Log.i("Youtube ID", ""+YoutubeID);
 
-            Picasso pic = Picasso.get();
-            pic.load("https://img.youtube.com/vi/"+YoutubeID+"/0.jpg").into(holder.mainImg);
+            //Loading Feature Image
+
+            String featuredImage = post.getString("jetpack_featured_media_url");
+            JSONArray videos = post.getJSONObject("meta_box").getJSONArray("prefix-video");
+
+            if(!featuredImage.isEmpty()){
+
+
+                ConstraintLayout.LayoutParams LP = (ConstraintLayout.LayoutParams) holder.mainImg.getLayoutParams();
+                LP.height = (int)convertDpToPixel(300);
+                holder.mainImg.setLayoutParams(LP);
+
+                Picasso pic = Picasso.get();
+                pic.load(featuredImage).into(holder.mainImg);
+            }
+            else{
+                Log.i("NO VIDEO", "SEE "+ videos);
+
+                if(videos != null && videos.length() > 0 ){
+
+                    Picasso pic = Picasso.get();
+                    pic.load("https://img.youtube.com/vi/"+YoutubeID+"/0.jpg").into(holder.mainImg);
+                }
+                else{
+                    ConstraintLayout.LayoutParams LP = (ConstraintLayout.LayoutParams) holder.mainImg.getLayoutParams();
+                    LP.height = (int)convertDpToPixel(87);
+                    holder.mainImg.setLayoutParams(LP);
+
+                    //holder.body.setVisibility(View.VISIBLE);
+                }
+                /*if(videos.length() == 0){
+
+
+                    ConstraintLayout.LayoutParams LP = (ConstraintLayout.LayoutParams) holder.mainImg.getLayoutParams();
+                    LP.height = (int)convertDpToPixel(87);
+                    holder.mainImg.setLayoutParams(LP);
+
+                    holder.body.setVisibility(View.VISIBLE);
+
+                }else{
+
+
+                    Picasso pic = Picasso.get();
+                    pic.load("https://img.youtube.com/vi/"+YoutubeID+"/0.jpg").into(holder.mainImg);
+
+                }*/
+
+            }
+
 
 
         } catch (JSONException e) {
@@ -123,11 +174,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         @Override
         public void onClick(View view) {
 
-            try {
-                mListener.onClick(view, Integer.parseInt(post.getString("id")));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                mListener.onClick(view, getAdapterPosition());
+                Log.i("ID **", ""+getAdapterPosition());
+
         }
     }
 
@@ -141,6 +190,10 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             return matcher.group(1);
         }/*from w  w  w.  j a  va  2 s .c om*/
         return null;
+    }
+
+    public float convertDpToPixel(float dp){
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 
