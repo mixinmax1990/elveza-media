@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void transitionNewsActivity(int position){
 
-
         Intent sharedIntent = new Intent(MainActivity.this, NewsActivity.class);
         sharedIntent.putExtra("position", ""+position);
         startActivity(sharedIntent);

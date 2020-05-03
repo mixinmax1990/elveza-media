@@ -68,7 +68,7 @@ public class NewsFragment extends Fragment {
 
                     if(bottomChildPos < 1000){
                         //Run the Magnete
-                        magneteArticles(bottomChildPos);
+                        //magneteArticles(bottomChildPos);
                     }
 
 

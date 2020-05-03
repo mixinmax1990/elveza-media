@@ -63,18 +63,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            holder.Headline.setText(post.getJSONObject("title").getString("rendered"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
+            holder.Headline.setText(Html.fromHtml(post.getJSONObject("title").getString("rendered")));
             holder.body.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
+            holder.excerpt.setText(String.format("%s", Html.fromHtml(post.getJSONObject("excerpt").getString("rendered"))));
             String YoutubeURL = post.getJSONObject("meta_box").getJSONArray("prefix-video").getString(0);
             Log.i("Youtube URL", YoutubeURL);
             String YoutubeID = getYoutubeId(YoutubeURL);
@@ -82,14 +73,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
             Picasso pic = Picasso.get();
             pic.load("https://img.youtube.com/vi/"+YoutubeID+"/0.jpg").into(holder.mainImg);
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
-
-
 
         float scalingFactor = 0.9f; // scale down to half the size
 
@@ -118,16 +106,16 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView Headline;
         TextView body;
+        TextView excerpt;
         ImageView mainImg;
         View contentView;
         public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
             Headline = itemView.findViewById(R.id.headline);
             mainImg = itemView.findViewById(R.id.mainIMG);
+            excerpt = itemView.findViewById(R.id.img_desc);
             body = itemView.findViewById(R.id.newsbody);
             contentView = itemView;
-
-
             mListener = listener;
             itemView.setOnClickListener(this);
         }
@@ -135,7 +123,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         @Override
         public void onClick(View view) {
 
-            mListener.onClick(view, getAdapterPosition());
+            try {
+                mListener.onClick(view, Integer.parseInt(post.getString("id")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

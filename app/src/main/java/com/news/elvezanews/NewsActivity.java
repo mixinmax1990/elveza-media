@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,6 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -24,7 +31,13 @@ import com.news.elvezanews.Data.LoadTempNews;
 import com.news.elvezanews.Models.NewsModelList;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener{
@@ -42,6 +55,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
+    private YouTubePlayer.OnInitializedListener youtube_listener;
 
 
     public NewsActivity() {
@@ -57,18 +71,22 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         tempNews  = new LoadTempNews();
         allNews = tempNews.getNews();
         position = Integer.parseInt(getIntent().getStringExtra("position"));
-        news = allNews.get(position);
+        Log.i("Post ID", ""+position);
+
+        String wp_geturl = "http://13.244.117.59/wp-json/wp/v2/posts?include[]="+position;
+        youtube_listener = this;
+
+        youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
+
+
+       // news = allNews.get(1);
 
         mainImg = findViewById(R.id.mainIMG);
         headline = findViewById(R.id.headline);
         newsBody = findViewById(R.id.newsbody);
         backbutton = findViewById(R.id.backbutton);
 
-        Picasso pic = Picasso.get();
-        pic.load(news.MainImage).into(mainImg);
-
-        headline.setText(news.Headline);
-        newsBody.setText(news.BodyText);
+        jsonParse(wp_geturl);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,26 +95,96 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             }
         });
 
-
         //Youtube Link Load
-        youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        if(!news.MainVideo.isEmpty()){
-            VideoCode = news.MainVideo;
-            mainImg.setVisibility(View.GONE);
-            youTubeView.setVisibility(View.VISIBLE);
-            youTubeView.isInEditMode();
-            youTubeView.initialize(Config.YOUTUBE_API_KEY, this);
-
-        }
-        else{
-            mainImg.setVisibility(View.VISIBLE);
-            youTubeView.setVisibility(View.GONE);
-        }
-
 
 
     }
 
+    private RequestQueue mQueue;
+
+    private void jsonParse(String getURL){
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, getURL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                Log.i("response", ""+response);
+                try {
+                    JSONObject post = response.getJSONObject(0);
+
+                    headline.setText(Html.fromHtml(post.getJSONObject("title").getString("rendered")));
+                    newsBody.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
+
+                    JSONArray videos = post.getJSONObject("meta_box").getJSONArray("prefix-video");
+                    JSONArray videos_desc = post.getJSONObject("meta_box").getJSONArray("prefix-description");
+
+                    boolean featured_image = false;
+                    if(featured_image){
+                        // set the featured image
+                        setFeaturedImage("Image Response Path");
+
+                        //check for content
+
+                        //check for videos
+
+                    }
+                    else{
+
+                        //there is no feature image so feature a video
+
+                        if(videos.isNull(0)){
+                            //there are no videos ... nothing to feature
+                            mainImg.setVisibility(View.GONE);
+                            youTubeView.setVisibility(View.GONE);
+                        }
+                        else{
+                            //feature the first video
+                            for(int x = 0;x < videos.length(); x++){
+                                //Load the video and add Description. If video is at top position load to the top. The second video will be added to the bottom of current pos
+                                if (x == 0) {
+                                    // this is the first video
+                                    mainImg.setVisibility(View.GONE);
+                                    youTubeView.setVisibility(View.VISIBLE);
+                                    launchYoutubePlayer(getYoutubeId(videos.getString(x)), youTubeView);
+
+                                }
+
+
+                            }
+                        }
+
+                    }
+
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+
+    }
+    private void setFeaturedImage(String image){
+        Picasso pic = Picasso.get();
+        pic.load(image).into(mainImg);
+        mainImg.setVisibility(View.VISIBLE);
+        youTubeView.setVisibility(View.GONE);
+    }
+
+    private void launchYoutubePlayer(String YoutubeID, YouTubePlayerView player){
+
+        player.isInEditMode();
+        player.initialize(Config.YOUTUBE_API_KEY, youtube_listener);
+
+    }
     public void setWhiteSysBar(){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -158,5 +246,17 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return youTubeView;
+    }
+
+    public static String getYoutubeId(String url) {
+        String pattern = "https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
+
+        Pattern compiledPattern = Pattern.compile(pattern,
+                Pattern.CASE_INSENSITIVE);
+        Matcher matcher = compiledPattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }/*from w  w  w.  j a  va  2 s .c om*/
+        return null;
     }
 }
