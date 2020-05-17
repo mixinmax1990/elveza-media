@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +47,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
     private LinearLayout menu_toggler;
     boolean menuToggled = false;
     private int bottomChildPos;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -53,6 +55,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
         activity = (MainActivity) getActivity();
+        progressBar = root.findViewById(R.id.progressbarNews);
         this.root = root;
         this.context = getContext();
         newsRecycler = root.findViewById(R.id.newslist_recycler);
@@ -264,6 +267,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
     public void onSuccessJson(JSONArray result, String type) {
         if(type == "news") {
             loadRecyclerAdapter(result);
+            progressBar.setVisibility(View.GONE);
         }
     }
 

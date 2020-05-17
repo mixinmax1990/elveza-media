@@ -17,6 +17,7 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.news.elvezanews.Data.LoadTempNews;
+import com.news.elvezanews.Interfaces.VolleyRequestResponse;
 import com.news.elvezanews.Models.NewsModelList;
 import com.squareup.picasso.Picasso;
 
@@ -50,7 +52,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener{
+public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     private List<NewsModelList> allNews;
     private LoadTempNews tempNews;
@@ -71,6 +73,8 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     private ConstraintLayout videoSection;
     private YouTubePlayer.OnInitializedListener youtube_listener;
     private ConstraintLayout news_container;
+    private ProgressBar progressBar;
+
 
 
     public NewsActivity() {
@@ -89,6 +93,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         position = Integer.parseInt(getIntent().getStringExtra("position"));
         socialBar = findViewById(R.id.social_bar);
         videoSection = findViewById(R.id.video_section);
+        progressBar = findViewById(R.id.progress_newsopend);
         Log.i("Post ID", ""+position);
 
         String wp_geturl = "http://13.244.88.197/wp-json/wp/v2/posts?include[]="+position;
@@ -271,6 +276,8 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             @Override
             public void onResponse(JSONArray response) {
 
+                progressBar.setVisibility(View.GONE);
+                news_container.setVisibility(View.VISIBLE);
                 Log.i("response", ""+response);
 
                 try {
@@ -433,4 +440,5 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     public float convertDpToPixel(float dp){
         return dp * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
+
 }

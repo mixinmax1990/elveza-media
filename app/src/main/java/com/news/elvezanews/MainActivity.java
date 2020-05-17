@@ -7,12 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -24,10 +29,18 @@ import com.news.elvezanews.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
+    LinearLayout topmenu;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -35,14 +48,36 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         setWhiteSysBar();
         setStatusbarspace();
+        topmenu = findViewById(R.id.top_menu);
+
+
+        //getSupportActionBar().setCustomView(R.layout.custom_menu);
+
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(, menu);
+        inflater.inflate(R.menu.moreitems, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item1:
+                Toast.makeText(this, "Item 1 Selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item2:
+                Toast.makeText(this, "Item 2 Selected", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
     }
 
     public void setWhiteSysBar(){

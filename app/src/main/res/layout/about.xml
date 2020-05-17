@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <FrameLayout
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/statusspace"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/top_menu"
+        app:layout_constraintTop_toBottomOf="@id/statusspace"
+        android:background="#C62E2E2E"
+        android:elevation="15dp"/>
+    <Space
+        android:id="@+id/logo_guide"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/top_menu"
+        app:layout_constraintRight_toRightOf="@id/top_menu"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ELVE"
+        android:id="@+id/headline_elve"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@id/logo_guide"
+        app:layout_constraintTop_toTopOf="@id/top_menu"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:elevation="20dp"
+        android:textColor="@android:color/white"
+        android:outlineProvider="none"/>
+
+    <TextView
+        android:id="@+id/headline_za"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ZA"
+        android:textColor="@color/colorAccent"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@id/logo_guide"
+        app:layout_constraintTop_toTopOf="@id/headline_elve"
+        android:elevation="20dp"
+        android:outlineProvider="none"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_black_24dp"
+        app:backgroundTint="@color/colorAccent"
+        android:contentDescription="backbutton"
+        android:id="@+id/backbutton"/>
+
+    <ScrollView
+        app:layout_constraintTop_toTopOf="@id/statusspace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/news_content"
+        >
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,6 +28,22 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_toggler"
         android:background="#CD121212"
         android:elevation="15dp"/>
+
+
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/headline_elve"
+        app:layout_constraintBottom_toBottomOf="@id/headline_elve"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title=""
+        android:elevation="20dp"
+        android:textColor="@android:color/white"
+        android:outlineProvider="none"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -84,8 +100,6 @@
         android:outlineProvider="none"
         app:tabTextColor="#9C9C9C"
         app:tabSelectedTextColor="@android:color/white"/>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

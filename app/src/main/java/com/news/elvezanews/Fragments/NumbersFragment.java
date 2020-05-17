@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,12 +26,14 @@ public class NumbersFragment extends Fragment implements VolleyRequestResponse {
 
     private RecyclerView numbersRecycler;
     private Context context;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_more, container, false);
         numbersRecycler = root.findViewById(R.id.numberslist_recycler);
+        progressBar = root.findViewById(R.id.progressbarNumbers);
         this.context = getContext();
         return root;
     }
@@ -66,6 +69,7 @@ public class NumbersFragment extends Fragment implements VolleyRequestResponse {
     public void onSuccessJson(JSONArray result, String type) {
        if(type == "numbers") {
            loadRecyclerAdapter(result);
+           progressBar.setVisibility(View.GONE);
        }
     }
 
