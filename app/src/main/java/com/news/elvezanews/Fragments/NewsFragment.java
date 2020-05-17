@@ -23,6 +23,7 @@ import com.news.elvezanews.Adapters.NewsRecyclerAdapter;
 import com.news.elvezanews.Data.LoadTempNews;
 import com.news.elvezanews.Data.WordpressJson;
 import com.news.elvezanews.Interfaces.RecyclerViewClickListener;
+import com.news.elvezanews.Interfaces.VolleyRequestResponse;
 import com.news.elvezanews.MainActivity;
 import com.news.elvezanews.Models.NewsModelList;
 import com.news.elvezanews.NewsActivity;
@@ -33,7 +34,7 @@ import org.json.JSONException;
 
 import java.util.List;
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements VolleyRequestResponse {
 
 
     private RecyclerView newsRecycler;
@@ -56,12 +57,6 @@ public class NewsFragment extends Fragment {
         this.context = getContext();
         newsRecycler = root.findViewById(R.id.newslist_recycler);
         menu_toggler = activity.findViewById(R.id.menu_toggler);
-
-
-
-
-
-
 
 
         return root;
@@ -93,11 +88,11 @@ public class NewsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        WordpressJson json = new WordpressJson("http://13.244.138.196/wp-json/wp/v2/posts", this.context, this);
+        WordpressJson json = new WordpressJson(NewsFragment.this, "http://13.244.88.197/wp-json/wp/v2/posts", this.context, "news");
 
     }
 
-    public void loadNewsRecyclerAdapter(final JSONArray allPosts){
+    public void loadRecyclerAdapter(final JSONArray allPosts){
 
         //tempNews  = new LoadTempNews();
         //allNews = tempNews.getNews();
@@ -265,4 +260,15 @@ public class NewsFragment extends Fragment {
         return dp * ((float) root.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
+    @Override
+    public void onSuccessJson(JSONArray result, String type) {
+        if(type == "news") {
+            loadRecyclerAdapter(result);
+        }
+    }
+
+    @Override
+    public void onFailureJson(int responseCode, String responseMessage) {
+
+    }
 }

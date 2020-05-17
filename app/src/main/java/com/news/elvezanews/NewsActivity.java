@@ -91,7 +91,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         videoSection = findViewById(R.id.video_section);
         Log.i("Post ID", ""+position);
 
-        String wp_geturl = "http://13.244.138.196/wp-json/wp/v2/posts?include[]="+position;
+        String wp_geturl = "http://13.244.88.197/wp-json/wp/v2/posts?include[]="+position;
         youtube_listener = this;
         youtube_view_container = findViewById(R.id.youtube_view_container);
 
