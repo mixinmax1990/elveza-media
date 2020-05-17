@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/holo_red_dark"
+    android:layout_margin="10dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="SomeoneSome"
+        android:paddingLeft="30dp"
+        android:paddingTop="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/numb_headline"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="01561774553"
+        android:id="@+id/numb_body"
+        app:layout_constraintTop_toBottomOf="@id/numb_headline"
+        android:paddingTop="5dp"
+        android:paddingBottom="30dp"
+        android:paddingLeft="30dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

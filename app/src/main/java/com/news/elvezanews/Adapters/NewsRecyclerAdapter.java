@@ -68,8 +68,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         Log.i("Position +++", ""+position);
         try {
             holder.Headline.setText(Html.fromHtml(post.getJSONObject("title").getString("rendered")));
-            holder.body.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
-            holder.excerpt.setText(String.format("%s", Html.fromHtml(post.getJSONObject("excerpt").getString("rendered"))));
+            //holder.body.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
+            holder.excerpt.setText(Html.fromHtml(post.getJSONObject("excerpt").getString("rendered")));
+            //holder.excerpt.setVisibility(View.GONE);
             String YoutubeURL = post.getJSONObject("meta_box").getJSONArray("prefix-video").getString(0);
             Log.i("Youtube URL", YoutubeURL);
             String YoutubeID = getYoutubeId(YoutubeURL);
