@@ -25,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.news.elvezanews.Models.NewsModelList;
+import com.news.elvezanews.ui.main.AboutActivity;
+import com.news.elvezanews.ui.main.PrivacyActivity;
 import com.news.elvezanews.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,10 +70,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.item1:
-                Toast.makeText(this, "Item 1 Selected", Toast.LENGTH_SHORT).show();
+                Intent sharedIntent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(sharedIntent);
                 return true;
             case R.id.item2:
-                Toast.makeText(this, "Item 2 Selected", Toast.LENGTH_SHORT).show();
+                Intent sharedIntent2 = new Intent(MainActivity.this, PrivacyActivity.class);
+                startActivity(sharedIntent2);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
