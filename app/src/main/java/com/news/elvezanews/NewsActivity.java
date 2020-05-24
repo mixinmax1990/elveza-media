@@ -26,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,7 +40,9 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.news.elvezanews.Adapters.MoreNewsRecyclerAdapter;
 import com.news.elvezanews.Data.LoadTempNews;
+import com.news.elvezanews.Interfaces.RecyclerViewClickListener;
 import com.news.elvezanews.Interfaces.VolleyRequestResponse;
 import com.news.elvezanews.Models.NewsModelList;
 import com.squareup.picasso.Picasso;
@@ -62,7 +66,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     TextView headline;
     TextView newsBody;
     TextView imageDesc;
-    FloatingActionButton backbutton;
+    ImageButton backbutton;
     String VideoCode;
     private RequestQueue mQueue;
 
@@ -74,6 +78,9 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     private YouTubePlayer.OnInitializedListener youtube_listener;
     private ConstraintLayout news_container;
     private ProgressBar progressBar;
+    private JSONArray allPosts;
+    private RecyclerView morenewsRecycler;
+
 
 
 
@@ -90,7 +97,16 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         tempNews  = new LoadTempNews();
         news_container = findViewById(R.id.news_container);
         allNews = tempNews.getNews();
+        morenewsRecycler = findViewById(R.id.more_newsRecycler);
+
         position = Integer.parseInt(getIntent().getStringExtra("position"));
+        try {
+            allPosts = new JSONArray(getIntent().getStringExtra("json"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        loadRecyclerAdapter();
         socialBar = findViewById(R.id.social_bar);
         videoSection = findViewById(R.id.video_section);
         progressBar = findViewById(R.id.progress_newsopend);
@@ -124,6 +140,42 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
 
     }
+
+    private void loadRecyclerAdapter(){
+        final RecyclerViewClickListener listener = new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                Log.i("Clicked MOre Item", "True");
+                int postID = 0;
+                // get the post related to the position of view and extract the ID
+                try {
+                    postID = Integer.parseInt(allPosts.getJSONObject(position).getString("id"));
+                    transitionNewsActivity(postID, allPosts);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //NewsModelList news = allNews.get(position);
+                //activity.transitionNewsActivity(postID, allPosts);
+            }
+        };
+        MoreNewsRecyclerAdapter moreNewsRecyclerAdapter = new MoreNewsRecyclerAdapter(this, allPosts, listener );
+
+        morenewsRecycler.setAdapter(moreNewsRecyclerAdapter);
+        LinearLayoutManager llm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        llm.setStackFromEnd(false);
+        morenewsRecycler.setLayoutManager(llm);
+    }
+    public void transitionNewsActivity(int position, JSONArray allPosts){
+
+        Intent sharedIntent = new Intent(this, NewsActivity.class);
+        sharedIntent.putExtra("position", ""+position);
+        sharedIntent.putExtra("json", allPosts.toString());
+        startActivity(sharedIntent);
+    }
+
     View BottomView;
     private void setContent(JSONObject post, boolean featured_first_video){
          BottomView = newsBody;
@@ -169,7 +221,7 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         description.setText(Html.fromHtml(desc));
         ConstraintLayout.LayoutParams LPdesc = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int margins = (int)convertDpToPixel(20);
-        description.setTextColor(Color.WHITE);
+        description.setTextColor(Color.BLACK);
         description.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         LPdesc.setMargins(margins, margins, margins, margins);
         description.setLayoutParams(LPdesc);
@@ -188,12 +240,13 @@ public class NewsActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
     }
 
-    private void createVideoPlayer(final String video){
+    private void createVideoPlayer(String videobase){
 
+        final String video = videobase;
         // Fake Video Player
         final FrameLayout videothumb_cont = new FrameLayout(this);
         ConstraintLayout.LayoutParams LP = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int margins = (int)convertDpToPixel(10);
+        int margins = (int)convertDpToPixel(0);
         LP.setMargins(margins, margins, margins, margins);
         videothumb_cont.setLayoutParams(LP);
         videothumb_cont.setId(View.generateViewId());

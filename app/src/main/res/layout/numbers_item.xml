@@ -9,6 +9,8 @@
     android:layout_marginBottom="2dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingBottom="10dp">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,6 +50,7 @@
         android:scaleType="centerCrop"
         android:layout_marginRight="30dp"
         android:alpha=".4"
+        android:visibility="gone"
         android:src="@drawable/ic_phone_black_24dp"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"

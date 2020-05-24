@@ -1,6 +1,11 @@
 package com.news.elvezanews.Adapters;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.news.elvezanews.Interfaces.RecyclerViewClickListener;
@@ -65,7 +71,7 @@ public class NumbersRecyclerAdapter extends RecyclerView.Adapter<NumbersRecycler
         return allNumbers.length();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView Name;
         TextView Number;
 
@@ -80,7 +86,8 @@ public class NumbersRecyclerAdapter extends RecyclerView.Adapter<NumbersRecycler
         public void onClick(View view) {
 
             mListener.onClick(view, getAdapterPosition());
-            Log.i("ID **", ""+getAdapterPosition());
+            //Log.i("ID **", "" + getAdapterPosition());
+
 
         }
     }

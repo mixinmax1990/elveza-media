@@ -91,7 +91,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        WordpressJson json = new WordpressJson(NewsFragment.this, "http://13.244.88.197/wp-json/wp/v2/posts", this.context, "news");
+        WordpressJson json = new WordpressJson(NewsFragment.this, "http://13.244.88.197/wp-json/wp/v2/posts?per_page=100", this.context, "news");
 
     }
 
@@ -112,7 +112,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
                 }
 
                 //NewsModelList news = allNews.get(position);
-                activity.transitionNewsActivity(postID);
+                activity.transitionNewsActivity(postID, allPosts);
             }
         };
 
@@ -266,6 +266,7 @@ public class NewsFragment extends Fragment implements VolleyRequestResponse {
     @Override
     public void onSuccessJson(JSONArray result, String type) {
         if(type == "news") {
+            Log.i("News amount", ""+result.length());
             loadRecyclerAdapter(result);
             progressBar.setVisibility(View.GONE);
         }

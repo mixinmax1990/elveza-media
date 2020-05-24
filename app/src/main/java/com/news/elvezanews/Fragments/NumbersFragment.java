@@ -1,15 +1,22 @@
 package com.news.elvezanews.Fragments;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +25,7 @@ import com.news.elvezanews.Adapters.NumbersRecyclerAdapter;
 import com.news.elvezanews.Data.WordpressJson;
 import com.news.elvezanews.Interfaces.RecyclerViewClickListener;
 import com.news.elvezanews.Interfaces.VolleyRequestResponse;
+import com.news.elvezanews.MainActivity;
 import com.news.elvezanews.R;
 
 import org.json.JSONArray;
@@ -52,6 +60,15 @@ public class NumbersFragment extends Fragment implements VolleyRequestResponse {
             public void onClick(View view, int position) {
 
                 Log.i("item was clicked", "True");
+
+                TextView numb = view.findViewById(R.id.numb_body);
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + numb.getText().toString()));
+                    context.startActivity(callIntent);
+                } catch (ActivityNotFoundException activityException) {
+                    Log.e("Calling a Phone Number", "Call failed", activityException);
+                }
 
             }
         };

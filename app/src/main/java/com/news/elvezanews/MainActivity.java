@@ -29,6 +29,8 @@ import com.news.elvezanews.ui.main.AboutActivity;
 import com.news.elvezanews.ui.main.PrivacyActivity;
 import com.news.elvezanews.ui.main.SectionsPagerAdapter;
 
+import org.json.JSONArray;
+
 public class MainActivity extends AppCompatActivity {
 
     LinearLayout topmenu;
@@ -119,10 +121,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void transitionNewsActivity(int position){
+    public void transitionNewsActivity(int position, JSONArray allPosts){
 
         Intent sharedIntent = new Intent(MainActivity.this, NewsActivity.class);
         sharedIntent.putExtra("position", ""+position);
+        sharedIntent.putExtra("json", allPosts.toString());
         startActivity(sharedIntent);
     }
 }

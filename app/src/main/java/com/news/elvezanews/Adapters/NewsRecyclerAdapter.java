@@ -65,11 +65,20 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+
         Log.i("Position +++", ""+position);
         try {
+            String img_desc = post.getJSONObject("excerpt").getString("rendered");
+
             holder.Headline.setText(Html.fromHtml(post.getJSONObject("title").getString("rendered")));
             //holder.body.setText(Html.fromHtml(post.getJSONObject("content").getString("rendered")));
-            holder.excerpt.setText(Html.fromHtml(post.getJSONObject("excerpt").getString("rendered")));
+            if(img_desc.isEmpty()){
+                holder.excerpt.setVisibility(View.GONE);
+            }
+            else{
+                holder.excerpt.setText(Html.fromHtml(post.getJSONObject("excerpt").getString("rendered")));
+            }
+
             //holder.excerpt.setVisibility(View.GONE);
             String YoutubeURL = post.getJSONObject("meta_box").getJSONArray("prefix-video").getString(0);
             Log.i("Youtube URL", YoutubeURL);
@@ -104,24 +113,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                     LP.height = (int)convertDpToPixel(87);
                     holder.mainImg.setLayoutParams(LP);
 
-                    //holder.body.setVisibility(View.VISIBLE);
                 }
-                /*if(videos.length() == 0){
-
-
-                    ConstraintLayout.LayoutParams LP = (ConstraintLayout.LayoutParams) holder.mainImg.getLayoutParams();
-                    LP.height = (int)convertDpToPixel(87);
-                    holder.mainImg.setLayoutParams(LP);
-
-                    holder.body.setVisibility(View.VISIBLE);
-
-                }else{
-
-
-                    Picasso pic = Picasso.get();
-                    pic.load("https://img.youtube.com/vi/"+YoutubeID+"/0.jpg").into(holder.mainImg);
-
-                }*/
 
             }
 

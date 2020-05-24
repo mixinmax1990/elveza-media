@@ -15,12 +15,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="250dp"
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/top_menu"
         app:layout_constraintTop_toBottomOf="@id/statusspace"
-        android:background="#C62E2E2E"
+        android:background="#FC2E2E2E"
         android:elevation="15dp"/>
     <Space
         android:id="@+id/logo_guide"
@@ -35,9 +35,10 @@
         android:layout_height="wrap_content"
         android:text="ELVE"
         android:id="@+id/headline_elve"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toStartOf="@id/logo_guide"
         app:layout_constraintTop_toTopOf="@id/top_menu"
+        app:layout_constraintBottom_toBottomOf="@id/top_menu"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="5dp"
         android:elevation="20dp"
@@ -50,7 +51,7 @@
         android:layout_height="wrap_content"
         android:text="ZA"
         android:textColor="@color/colorAccent"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@id/logo_guide"
         app:layout_constraintTop_toTopOf="@id/headline_elve"
         android:elevation="20dp"
@@ -68,18 +69,34 @@
         android:contentDescription="backbutton"
         android:id="@+id/backbutton"/>
 
-    <ScrollView
-        app:layout_constraintTop_toTopOf="@id/statusspace"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/news_content"
-        >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/about_headline"
+    app:layout_constraintTop_toBottomOf="@id/top_menu"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:text="About us"
+    android:layout_margin="30dp"
+    android:textSize="25sp"
+    android:textColor="@android:color/black"/>
         <TextView
+            android:id="@+id/about_body"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/about_headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About Elveza - comes in here"
-            android:gravity="center"
+            android:padding="20dp"
+            android:textColor="@android:color/black"
+            android:text="We are a private community news media business that highlights local issues that are not covered by mainstream media.  Our current area of coverage is Kajiado North and West."
             android:layout_gravity="center"/>
 
-    </ScrollView>
+    <TextView
+        android:paddingLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/about_body"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="  \n Email:  elvezamedia@gmail.com \n Tel: 0726072581 \n Address:  Sungura plaza Ngong Town."
+/>
 </androidx.constraintlayout.widget.ConstraintLayout>
